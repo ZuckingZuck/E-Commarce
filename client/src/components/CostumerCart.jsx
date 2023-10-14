@@ -1,8 +1,9 @@
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 import CartItem from './CartItem';
-import PaymentForm from './CheckOutForm';
 function CustomerCart(props) {
   const { carts } = props;
+  console.log(carts);
   return (
     <div className="container">
         <div className="row">
@@ -17,10 +18,11 @@ function CustomerCart(props) {
             <div className="col-md-4">
                 <div className='card'>
                     <div className="card-header bg-dark text-light">
-                        Ödeme: {props.TotalPrice}
+                        İşlemler
                     </div>
                     <div className="card-body">
-                        <PaymentForm />
+                        <NavLink to="/" className='btn btn-primary'> <i className="fa-solid fa-arrow-left"></i> Alışverişe devam et</NavLink>
+                        <NavLink to="/odeme" className='btn btn-success ms-2'> <i className="fa-solid fa-credit-card"></i> Alışverişi tamamla</NavLink>
                     </div>
                     
                 </div>

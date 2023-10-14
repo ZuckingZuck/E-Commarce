@@ -2,7 +2,7 @@ const Product = require('../models/Product');
 
 const getProducts = async (req, res, next) => {
 
-    const products = await Product.find({}).sort({createdAt: -1});
+    const products = await Product.find({ stock: { $gt: 0 }}).sort({createdAt: -1});
     res.status(200).json({products});
 }
 

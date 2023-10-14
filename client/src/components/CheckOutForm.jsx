@@ -1,12 +1,18 @@
 import React, { useState, useEffect } from 'react';
+import { useCartContext } from '../hooks/useCartContext';
+import { useNavigate } from 'react-router';
 import { loadStripe } from '@stripe/stripe-js';
+import { useAuthContext } from '../hooks/useAuthContext';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 
 const stripePromise = loadStripe('pk_test_51MxaYkJH6v2VqZATbT9eXDqK9xvQD9T7LXRc5dvk6eLVaTSGSsi8nu17ndZoNPJq8RxRKKE50jaWdIDZKvMGY2BH00tXk9uzcd');
 
 const CheckoutForm = () => {
+  const navigate = useNavigate()
+  const { user } = useAuthContext();
   const stripe = useStripe();
   const elements = useElements();
+  const { dispatch } = useCartContext();
   const [loading, setLoading] = useState(false);
   const [cardHoldersName, setCardHoldersName] = useState("");
   const [error, setError] = useState(null);
@@ -23,39 +29,55 @@ const CheckoutForm = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     setLoading(true);
-   
-    const { clientSecret } = await fetch('https://eticaretbackend.azurewebsites.net/create-payment-intent', {
+  
+    // Stripe Elements'dan kart bilgilerini alın
+    const cardElement = elements.getElement(CardElement);
+  
+    // Kart bilgilerini doğrulayın
+    const { error, paymentMethod } = await stripe.createPaymentMethod({
+      type: 'card',
+      card: cardElement,
+      billing_details: {
+        name: cardHoldersName,
+      },
+    });
+  
+    if (error) {
+      // Kart bilgileri doğrulanamadıysa hata mesajını gösterin
+      setError(error.message);
+      setLoading(false);
+      return;
+    }
+  
+    // Kart bilgileri doğrulandıysa ödeme işlemini gerçekleştirin
+    const { clientSecret } = await fetch('./api/cart/pay', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Authorization': `Bearer ${user.token}`,
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        amount: 1099 // 10.99 USD
-      })
     }).then((res) => res.json());
-
+  
     const result = await stripe.confirmCardPayment(clientSecret, {
-      payment_method: {
-        card: elements.getElement(CardElement),
-        billing_details: {
-          name: cardHoldersName
-        }
-      }
+      payment_method: paymentMethod.id, // Doğrulanan kart bilgilerini kullanın
     });
-
+  
     if (result.error) {
       setError(result.error.message);
       setSucceeded(false);
-      setLoading(false);
     } else {
       setError(null);
       setSucceeded(true);
       clearForm();
-      setLoading(false);
+      dispatch({ type: 'DELETE_ALL' });
+      setTimeout(() => {
+        navigate('/profil');
+      }, 2000);
     }
-
-    
+  
+    setLoading(false);
   };
+  
     const clearForm = () => {
         elements.getElement(CardElement).clear();
         setCardHoldersName('');
