@@ -8,7 +8,7 @@ const Orders = (props) => {
     useEffect(() => {
         console.log("test")
         const fetchOrders = async () => {
-        const response = await fetch(process.env.SERVER_URL + '/api/cart/orders', {
+        const response = await fetch(process.env.REACT_APP_SERVER_URL + '/api/cart/orders', {
           headers: {
             'Authorization': `Bearer ${user.token}`,
           }
