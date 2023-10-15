@@ -50,7 +50,7 @@ const CheckoutForm = () => {
     }
   
     // Kart bilgileri doğrulandıysa ödeme işlemini gerçekleştirin
-    const { clientSecret } = await fetch('./api/cart/pay', {
+    const { clientSecret } = await fetch(process.env.SERVER_URL + '/api/cart/pay', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${user.token}`,

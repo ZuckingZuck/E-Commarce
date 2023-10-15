@@ -17,7 +17,7 @@ const Product = (props) => {
             navigate('/login');
         }
 
-        const response = await fetch('/api/cart/addtocart', {
+        const response = await fetch(process.env.SERVER_URL + '/api/cart/addtocart', {
             method: 'POST',
             body: JSON.stringify({'ProductId': product._id}),
             headers: {

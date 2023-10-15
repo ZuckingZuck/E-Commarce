@@ -1,8 +1,4 @@
 {
-<<<<<<< HEAD
-=======
-  "proxy": "https://ecommarce-k62l.onrender.com",
->>>>>>> 43d4b61818a2456ce2266db94738d56574ecf0a1
   "name": "client",
   "version": "0.1.0",
   "private": true,

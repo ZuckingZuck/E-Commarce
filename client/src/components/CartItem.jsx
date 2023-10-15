@@ -30,7 +30,7 @@ const CartItem = (props) => {
         const value = event.target.value;
         setSelectedOption(value);
         const id = cartItem._id;
-        const response = await fetch('/api/cart/update', {
+        const response = await fetch(process.env.SERVER_URL + '/api/cart/update', {
             method: "POST",
             headers: {
                 'Authorization': `Bearer ${user.token}`,
@@ -49,7 +49,7 @@ const CartItem = (props) => {
 
     const handleDelete = async(e) => {
         const id = cartItem._id;
-        const response = await fetch(`/api/cart/delete`, {
+        const response = await fetch(process.env.SERVER_URL + `/api/cart/delete`, {
             method: "POST",
             headers: {
                 'Authorization': `Bearer ${user.token}`,
