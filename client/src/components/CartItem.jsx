@@ -16,7 +16,7 @@ const CartItem = (props) => {
         setSelectedOption(cartItem.quantity);
 
         const getProduct = async () => {
-           const response = await fetch(`/api/products/${cartItem.ProductId}`);
+           const response = await fetch(process.env.SERVER_URL + `${cartItem.ProductId}`);
             const json = await response.json();
            if(response.ok){
             setProduct(json)
